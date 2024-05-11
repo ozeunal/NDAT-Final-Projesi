@@ -4,6 +4,6 @@
 /**
  * 
  */
-module COMU_Havayolu_1 {
+module COMU_Havayolu {
 	requires java.sql;
 }
