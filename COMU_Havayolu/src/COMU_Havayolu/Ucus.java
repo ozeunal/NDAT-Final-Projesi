@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Ucus {
@@ -16,6 +18,8 @@ public class Ucus {
     private double fiyat;
     private String ucus_sikligi;
     private Date son_uctugu_gun;
+    Koltuk koltuk;
+    //private List<Koltuk> koltuklar;
     /*
     private int koltuk_kapasite;
     private int VIP_koltuk_kapasite;
@@ -31,6 +35,7 @@ public class Ucus {
         this.fiyat = fiyat;
         this.ucus_sikligi = ucus_sikligi;
         this.son_uctugu_gun = son_uctugu_gun;
+        //this.koltuklar=new ArrayList<>();
         /*
         this.koltuk_kapasite = koltuk_kapasite;
         this.VIP_koltuk_kapasite = VIP_koltuk_kapasite;
@@ -227,6 +232,8 @@ public class Ucus {
 
 	                 if (secilen_ucus > 0 && secilen_ucus < index) {
 	                     System.out.println("Seçilen uçuş: " + secilen_ucus);
+	                     Koltuk.main(null);
+	                     
 	                 } 
 	                 else {
 	                        System.out.println("Geçersiz seçim.");
