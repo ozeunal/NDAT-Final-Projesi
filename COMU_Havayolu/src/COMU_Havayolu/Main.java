@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class Main {
 
 	Ucus ucus;
-	private static Kullanici kullanici;
+	public static Kullanici kullanici;
 
 	public static void main(String[] args) {
 		
@@ -32,7 +32,54 @@ public class Main {
 			Kullanici.kayit();
 			break;
 		case 2: 
-			giris();
+			 try {
+			        Scanner input1 = new Scanner(System.in);
+			        System.out.print("E-posta: ");
+			        String email = input1.nextLine();
+			        System.out.print("Parola: ");
+			        String parola = input1.nextLine();
+
+			        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/havayolu", "root", "");
+
+			        String sql = "SELECT * FROM kullanici WHERE eposta = ? AND parola = ?";
+			        PreparedStatement statement = connection.prepareStatement(sql);
+			        statement.setString(1, email);
+			        statement.setString(2, parola);
+			        
+			        // Sorguyu çalıştırma
+			        ResultSet resultSet = statement.executeQuery();
+
+			        if (resultSet.next()) {
+			            int kId = resultSet.getInt("k_id");
+			            String email1 = resultSet.getString("eposta");
+			            int parola1 = resultSet.getInt("parola");
+			            kullanici = new Kullanici(email1,parola1);
+			            kullanici.setId(kId);
+			            
+			            int gecenYil = Kullanici.kayitTarihindenGecenYil(kId);
+			            if (gecenYil >= 10) {
+			            	kullanici.setUyelikTipi("VIP");
+			                System.out.println("Hoşgeldiniz VIP " + resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
+			            } else if(gecenYil>=5) {
+			            	kullanici.setUyelikTipi("Daimi Üye");
+			                System.out.println("Hoşgeldiniz Daimi Üyemiz "+ resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
+			            }else {
+			            	System.out.println("Hoşgeldiniz "+ resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
+			            }
+			            
+			            Ucus.ucus();
+			        } else {
+			            System.out.println("E-posta veya parola hatalı!");
+			        }
+
+			        // Bağlantıyı kapatma
+			        connection.close();
+
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			    }
+			 break;
+			
 		case 3: 
 			System.out.print("Güle güle!");
 			System.out.println();
@@ -46,84 +93,4 @@ public class Main {
 	}
 	
 	
-		public static void giris() {
-		    try {
-		        Scanner input = new Scanner(System.in);
-		        System.out.print("E-posta: ");
-		        String email = input.nextLine();
-		        System.out.print("Parola: ");
-		        String parola = input.nextLine();
-
-		        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/havayolu", "root", "");
-
-		        String sql = "SELECT * FROM kullanici WHERE eposta = ? AND parola = ?";
-		        PreparedStatement statement = connection.prepareStatement(sql);
-		        statement.setString(1, email);
-		        statement.setString(2, parola);
-		        
-		        // Sorguyu çalıştırma
-		        ResultSet resultSet = statement.executeQuery();
-
-		        if (resultSet.next()) {
-		            int kId = resultSet.getInt("k_id");
-		            String ad = resultSet.getString("ad");
-		            String soyad = resultSet.getString("soyad");
-		            String tc = resultSet.getString("tc");
-		            LocalDate dogumTarihi = resultSet.getDate("dogumTarihi").toLocalDate();
-		            String telefonNumarasi = resultSet.getString("telefon");
-		            char cinsiyet = resultSet.getString("cinsiyet").charAt(0);
-		            char medeniDurum = resultSet.getString("medeniDurum").charAt(0);
-		            String eposta = resultSet.getString("eposta");
-		            int parola1 = resultSet.getInt("parola");
-		            LocalDate kayitTarihi = resultSet.getDate("kayitTarihi").toLocalDate();
-		            String uyelikTipi = resultSet.getString("uyelik_tipi");
-		            Kullanici kullanici = new Kullanici();
-		            kullanici.setId(kId);
-		            kullanici.setAd(ad);
-		            kullanici.setSoyad(soyad);
-		            kullanici.setCinsiyet(cinsiyet);
-		            kullanici.setDogumTarihi(dogumTarihi);
-		            kullanici.setEposta(eposta);
-		            kullanici.setMedeniDurum(medeniDurum);
-		            kullanici.setParola(parola1);
-		            kullanici.setTc(tc);
-		            kullanici.setTelefonNumarasi(telefonNumarasi);
-		            kullanici.setKayitTarihi(kayitTarihi);
-		            kullanici.setUyelikTipi(uyelikTipi);
-		            setKullanici(kullanici);
-		            
-		            int gecenYil = Kullanici.kayitTarihindenGecenYil(kId);
-		            if (gecenYil >= 10) {
-		            	Kullanici.uyelikTipi(kId, "VIP");
-		                System.out.println("Hoşgeldiniz VIP " + resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
-		            } else if(gecenYil>=5) {
-		            	Kullanici.uyelikTipi(kId, "Daimi Üye");
-		                System.out.println("Hoşgeldiniz Daimi Üyemiz "+ resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
-		            }else {
-		            	System.out.println("Hoşgeldiniz "+ resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
-		            }
-		            
-		            
-
-		            Ucus.ucus();
-		        } else {
-		            System.out.println("E-posta veya parola hatalı!");
-		        }
-
-		        // Bağlantıyı kapatma
-		        connection.close();
-
-		    } catch (SQLException e) {
-		        e.printStackTrace();
-		    }
-		
-	}
-		static void setKullanici(Kullanici kullanici) {
-	        Main.kullanici = kullanici;
-	    }
-		
-		public static Kullanici getKullanici() {
-		    return kullanici;
-		}
-		
 }

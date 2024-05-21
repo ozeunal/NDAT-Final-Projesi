@@ -44,6 +44,11 @@ public class Kullanici {
 	}
 	*/
 	
+	public Kullanici(String email, int parola) {
+		e_posta = email;
+		this.parola = parola; 
+	}
+	
 	public void setId(int id) {
 	    k_id=id;
 	}
@@ -52,8 +57,8 @@ public class Kullanici {
         return k_id;
     }
 	
-	public void setUyelikTipi(String uyelik_tipi) {
-        uyelik_tipi= uyelik_tipi;
+	public void setUyelikTipi(String uyelikTipi) {
+        uyelik_tipi= uyelikTipi;
     }
 	
 	public String getUyelikTipi() {
@@ -193,19 +198,6 @@ public class Kullanici {
  }
 		
 	}
-    
-    public static void uyelikTipi(int kId, String uyelikTipi) {
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/havayolu", "root", "")) {
-            String sql = "UPDATE kullanici SET uyelik_tipi = ? WHERE k_id = ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, uyelikTipi);
-            statement.setInt(2, kId);
-
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
 public static int kayitTarihindenGecenYil(int kId) {
 	
@@ -230,7 +222,6 @@ public static int kayitTarihindenGecenYil(int kId) {
         }
         return 0;
 }
-
 
 }
 

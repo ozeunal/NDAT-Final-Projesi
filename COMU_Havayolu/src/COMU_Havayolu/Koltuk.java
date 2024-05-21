@@ -131,15 +131,13 @@ public class Koltuk {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Koltuk koltuklar = new Koltuk();
-        Kullanici kullanici=new Kullanici();
-        Main.setKullanici(kullanici);
-        
+        System.out.println("ID: "+ Main.kullanici.getUyelikTipi());
         koltuklar.koltukListele();
         
         System.out.print("Hangi koltuğu seçmek istersiniz?: ");
         int koltukId = input.nextInt();
 
-        boolean başarı = koltuklar.koltukRezerveEt(koltukId, Main.getKullanici().getId(), Main.getKullanici().getUyelikTipi());
+        boolean başarı = koltuklar.koltukRezerveEt(koltukId, Main.kullanici.getId(), Main.kullanici.getUyelikTipi());
 
         if (başarı) {
             System.out.println("Koltuk başarıyla rezerve edildi.");
