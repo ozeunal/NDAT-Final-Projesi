@@ -2,6 +2,7 @@ package COMU_Havayolu;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -14,15 +15,20 @@ public class Koltuk {
     private int k_id;
     public koltukDurumu koltukDurumu;
     private List<Koltuk> koltuklar;
-    
+    private int koltuk_no;
 
-    public Koltuk(int koltuk_id, int k_id, koltukDurumu koltukDurumu) {
+    public Koltuk(int koltuk_id, int k_id, koltukDurumu koltukDurumu, int koltukNo) {
         this.koltuk_id = koltuk_id;
         this.k_id = k_id;
         this.koltukDurumu = koltukDurumu;
+        koltuk_no=koltukNo;
     }
     
 
+    public int getKoltukNo() {
+        return koltuk_no;
+    }
+    
     public int getKoltukId() {
         return koltuk_id;
     }
@@ -45,27 +51,33 @@ public class Koltuk {
 
     public Koltuk() {
         koltuklar = new ArrayList<>();
-        koltukCek();
+        //int ucus_Id=ucus.getId();
+        koltukCek(Ucus.ucus.getId());
+       
     }
 
-    private void koltukCek() {
+    private void koltukCek(int ucusId) {
         String url = "jdbc:mysql://localhost:3306/havayolu";
         String username = "root";
         String password = "";
-        String query = "SELECT koltuk_id, k_id, koltukDurumu FROM koltuk";
+        String query = "SELECT * FROM koltuk where ucus_id=?";
 
         try (Connection conn = DriverManager.getConnection(url, username, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+        		PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, ucusId);
+            try (ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 int koltuk_id = rs.getInt("koltuk_id");
+                int koltuk_no = rs.getInt("koltuk_no");
                 int k_id = rs.getInt("k_id");
                 String koltukDurumuString = rs.getString("koltukDurumu");
                 koltukDurumu koltukDurumu = COMU_Havayolu.koltukDurumu.valueOf(koltukDurumuString);
 
-                koltuklar.add(new Koltuk(koltuk_id, k_id, koltukDurumu));
+                koltuklar.add(new Koltuk(koltuk_id, k_id, koltukDurumu, koltuk_no));
             }
+             }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +87,7 @@ public class Koltuk {
     public void koltukListele() {
         System.out.println("Koltuklar:");
         for (Koltuk koltuk : koltuklar) {
-            System.out.println("Koltuk " + koltuk.getKoltukId() + ": " + koltuk.getKoltukDurumu());
+            System.out.println("Koltuk " + koltuk.getKoltukNo() + ": " + koltuk.getKoltukDurumu());
         }
     }
 
@@ -131,7 +143,6 @@ public class Koltuk {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Koltuk koltuklar = new Koltuk();
-        System.out.println("ID: "+ Main.kullanici.getUyelikTipi());
         koltuklar.koltukListele();
         
         System.out.print("Hangi koltuğu seçmek istersiniz?: ");

@@ -67,7 +67,7 @@ public class Main {
 			            	System.out.println("Hoşgeldiniz "+ resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
 			            }
 			            
-			            Ucus.ucus();
+			            Ucus.main(args);
 			        } else {
 			            System.out.println("E-posta veya parola hatalı!");
 			        }
