@@ -63,7 +63,7 @@ public class Koltuk {
         String query = "SELECT * FROM koltuk where ucus_id=?";
 
         try (Connection conn = DriverManager.getConnection(url, username, password);
-             Statement stmt = conn.createStatement();
+            // Statement stmt = conn.createStatement();
         		PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, ucusId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -100,12 +100,14 @@ public class Koltuk {
             }
         }
 
+       
         if (seçilenKoltuk == null) {
             System.out.println("Belirtilen koltuk bulunamadı.");
             return false;
         }
+        
 
-        if (seçilenKoltuk.getKoltukId() <= 4 && !kullanıcıVIP.equals("VIP")) {
+        if ((seçilenKoltuk.getKoltukNo() <= 4) && (!kullanıcıVIP.equals("VIP"))) {
             System.out.println("Bu koltuk VIP müşterilere ayrılmıştır.");
             return false;
         }
@@ -146,8 +148,27 @@ public class Koltuk {
         koltuklar.koltukListele();
         
         System.out.print("Hangi koltuğu seçmek istersiniz?: ");
-        int koltukId = input.nextInt();
+        int koltukNo = input.nextInt();
+        
+        int koltukId = 0;
+        for (Koltuk koltuk : koltuklar.koltuklar) {
+            if (koltuk.getKoltukNo() == koltukNo) {
+                koltukId = koltuk.getKoltukId();
+                break;
+            }
+        }
+        if (koltukId == 0) {
+            System.out.println("Belirtilen koltuk bulunamadı.");
+            return;
+        }
 
+        /*
+        System.out.println("UYE ID: "+Main.kullanici.getId());
+        System.out.println("UYE TİPİ: "+Main.kullanici.getUyelikTipi());
+        System.out.println("UCUS ID: "+Ucus.ucus.getId());
+        System.out.println("KOLTUK ID: "+koltukId);
+        */
+        
         boolean başarı = koltuklar.koltukRezerveEt(koltukId, Main.kullanici.getId(), Main.kullanici.getUyelikTipi());
 
         if (başarı) {

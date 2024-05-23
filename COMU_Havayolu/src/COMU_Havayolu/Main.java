@@ -51,9 +51,11 @@ public class Main {
 
 			        if (resultSet.next()) {
 			            int kId = resultSet.getInt("k_id");
+			            String uyelikTipi = resultSet.getString("uyelik_tipi");
 			            String email1 = resultSet.getString("eposta");
 			            int parola1 = resultSet.getInt("parola");
 			            kullanici = new Kullanici(email1,parola1);
+			            kullanici.setUyelikTipi(uyelikTipi);
 			            kullanici.setId(kId);
 			            
 			            int gecenYil = Kullanici.kayitTarihindenGecenYil(kId);
@@ -64,6 +66,7 @@ public class Main {
 			            	kullanici.setUyelikTipi("Daimi Üye");
 			                System.out.println("Hoşgeldiniz Daimi Üyemiz "+ resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
 			            }else {
+			            	kullanici.setUyelikTipi("Normal");
 			            	System.out.println("Hoşgeldiniz "+ resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
 			            }
 			            
