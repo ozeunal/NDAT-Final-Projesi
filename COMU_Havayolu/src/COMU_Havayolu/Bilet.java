@@ -123,84 +123,85 @@ public class Bilet {
         String password = "";
         
         String fiyatSorgusu = "SELECT ucus.fiyat, kullanici.uyelik_tipi " +
-                "FROM bilet " +
-                "INNER JOIN ucus ON bilet.ucus_id = ucus.id " +
-                "INNER JOIN koltuk ON bilet.k_id = koltuk.k_id " +
-                "INNER JOIN kullanici ON bilet.k_id = kullanici.k_id " +
-                "WHERE bilet.k_id=?";
-        double normalFiyat=0;
-        String uyeTipi="";
+                "FROM ucus " +
+                "INNER JOIN kullanici ON kullanici.k_id = ? " +
+                "WHERE ucus.id = ?";
+        
+        double normalFiyat = 0;
+        String uyeTipi = "";
+        
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement fiyatStmt = conn.prepareStatement(fiyatSorgusu)) {
-            fiyatStmt.setInt(1, ucusId);
+            
+            fiyatStmt.setInt(1, kullaniciId);
+            fiyatStmt.setInt(2, ucusId);
+            
             try (ResultSet fiyatResultSet = fiyatStmt.executeQuery()) {
                 if (fiyatResultSet.next()) {
                     normalFiyat = fiyatResultSet.getDouble("fiyat");
-                    uyeTipi=fiyatResultSet.getString("uyelik_tipi");
-                    
+                    uyeTipi = fiyatResultSet.getString("uyelik_tipi");
                 }
-                
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            
-        } 
-        double indirimliFiyat=normalFiyat;
+        }
         
-        if(uyeTipi.equals("VIP")) {
-        	 indirimliFiyat -= (normalFiyat * VIP_Kullanici.indirim_Orani);
+        double indirimliFiyat = normalFiyat;
+        
+        if (uyeTipi.equals("VIP")) {
+            indirimliFiyat -= (normalFiyat * VIP_Kullanici.indirim_Orani);
+        } else if (uyeTipi.equals("Daimi Üye")) {
+            indirimliFiyat -= (normalFiyat * Daimi_Kullanici.indirim_Orani);
         }
-        else if(uyeTipi.equals("Daimi Üye")) {
-        	indirimliFiyat -= (normalFiyat * Daimi_Kullanici.indirim_Orani);
-        }
+        
         Scanner input = new Scanner(System.in);
-        System.out.print("İndirimli bilet fiyatı: %.2fTL\n" + indirimliFiyat);
+        System.out.printf("İndirimli bilet fiyatı: %.2fTL\n", indirimliFiyat);
         System.out.print("Onaylıyor musunuz? (E/H): ");
         String onay = input.next();
         
         if (onay.equalsIgnoreCase("E")) {
-        	
-        String insertQuery = "INSERT INTO bilet (ucus_id, k_id) VALUES (?, ?)";
-        try (Connection conn = DriverManager.getConnection(url, username, password)) {
-            // Bilet tablosuna yeni bilet ekleniyor
-            try (PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-                pstmt.setInt(1, ucusId);
-                pstmt.setInt(2, kullaniciId);
-                pstmt.executeUpdate();
-                
-                // Eklenen biletin ID'sini al
-                ResultSet generatedKeys = pstmt.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int biletId = generatedKeys.getInt(1);
-                    Bilet bilet=new Bilet();
-                    bilet.setBiletId(biletId);
+            String insertQuery = "INSERT INTO bilet (ucus_id, k_id) VALUES (?, ?)";
+            try (Connection conn = DriverManager.getConnection(url, username, password)) {
+                // Bilet tablosuna yeni bilet ekleniyor
+                try (PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+                    pstmt.setInt(1, ucusId);
+                    pstmt.setInt(2, kullaniciId);
+                    pstmt.executeUpdate();
                     
-                    // Koltuk tablosunda koltuk durumunu güncelle
-                    String updateQuery = "UPDATE koltuk SET koltukDurumu = 'DOLU', bilet_id= "+biletId+" WHERE ucus_id = ? AND koltuk_id = ?";
-                    try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
-                        updateStmt.setInt(1, ucusId);
-                        updateStmt.setInt(2, koltukId);
-                        updateStmt.executeUpdate();
+                    // Eklenen biletin ID'sini al
+                    ResultSet generatedKeys = pstmt.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        int biletId = generatedKeys.getInt(1);
+                        Bilet bilet = new Bilet();
+                        bilet.setBiletId(biletId);
                         
-                        System.out.println("Ödemeniz başarıyla alındı.");
+                        // Koltuk tablosunda koltuk durumunu güncelle
+                        String updateQuery = "UPDATE koltuk SET koltukDurumu = 'DOLU', bilet_id = ? WHERE ucus_id = ? AND koltuk_id = ?";
+                        try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+                            updateStmt.setInt(1, biletId);
+                            updateStmt.setInt(2, ucusId);
+                            updateStmt.setInt(3, koltukId);
+                            updateStmt.executeUpdate();
+                            
+                            System.out.println("Ödemeniz başarıyla alındı.");
+                        }
                     }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("Bilet alımı iptal edildi.");
         }
-     }
-        else {
-        	 System.out.println("Bilet alımı iptal edildi.");
-        }
+        
         System.out.println();
-		System.out.print("Ana Menuye dönmek için (1)e basın: ");
-		
-		int secim = input.nextInt();
-		switch(secim) {
-		case 1: 
-			Ucus.ucusIslemleriMenu();
-		}
+        System.out.print("Ana Menuye dönmek için (1)e basın: ");
+        
+        int secim = input.nextInt();
+        switch (secim) {
+            case 1: 
+                Ucus.ucusIslemleriMenu();
+        }
     }
     
     
@@ -247,7 +248,7 @@ public class Bilet {
         double iadeFiyati = odenenFiyat - (odenenFiyat * iadeOrani);
 
         // Kullanıcıya iade edilecek miktarı gösterelim
-        System.out.print("İade edilecek miktar: %.2fTL\n" + iadeFiyati);
+        System.out.printf("İade edilecek miktar: %.2fTL\n" , iadeFiyati);
         
         System.out.print("Bilet iade edilsin mi? (E/H): ");
         String iadeOnay = input.next();
@@ -289,5 +290,31 @@ public class Bilet {
     }
 
 
+    public boolean r_biletIptal(int koltukId) {
+        String url = "jdbc:mysql://localhost:3306/havayolu";
+        String username = "root";
+        String password = "";
+        String query = "UPDATE koltuk SET koltukDurumu = 'BOŞ', k_id = NULL WHERE koltuk_id = ?";
+
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, koltukId);
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                System.out.println("Rezervasyon iptali sırasında bir hata oluştu.");
+                return false;
+            }
+            
+            System.out.println("Rezervasyonunuz iptal edildi.");
+            Ucus.ucus.ucusIslemleriMenu();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }

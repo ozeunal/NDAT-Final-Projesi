@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 27 May 2024, 09:04:57
+-- Üretim Zamanı: 27 May 2024, 14:28:22
 -- Sunucu sürümü: 10.4.25-MariaDB
 -- PHP Sürümü: 8.1.10
 
@@ -40,10 +40,13 @@ CREATE TABLE `bilet` (
 INSERT INTO `bilet` (`bilet_id`, `ucus_id`, `k_id`) VALUES
 (10, 19, 2),
 (11, 4, 4),
-(15, 1, 2),
 (21, 2, 2),
 (22, 1, 2),
-(26, 2, 2);
+(26, 2, 2),
+(27, 2, 2),
+(28, 8, 2),
+(34, 1, 2),
+(35, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -65,23 +68,23 @@ CREATE TABLE `koltuk` (
 --
 
 INSERT INTO `koltuk` (`koltuk_id`, `koltukDurumu`, `k_id`, `ucus_id`, `koltuk_no`, `bilet_id`) VALUES
-(1, 'BOŞ', NULL, 1, 1, NULL),
-(2, 'BOŞ', 2, 1, 2, NULL),
+(1, 'DOLU', 2, 1, 1, 34),
+(2, 'BOŞ', NULL, 1, 2, NULL),
 (3, 'BOŞ', NULL, 1, 3, NULL),
-(4, 'DOLU', 2, 1, 4, 15),
+(4, 'BOŞ', NULL, 1, 4, NULL),
 (5, 'DOLU', 2, 1, 5, 22),
 (6, 'BOŞ', NULL, 1, 6, NULL),
 (7, 'BOŞ', NULL, 1, 7, NULL),
 (8, 'BOŞ', NULL, 1, 8, NULL),
 (9, 'BOŞ', NULL, 1, 9, NULL),
-(10, 'BOŞ', NULL, 1, 10, NULL),
+(10, 'DOLU', 2, 1, 10, 35),
 (11, 'BOŞ', NULL, 1, 11, NULL),
 (12, 'BOŞ', NULL, 1, 12, NULL),
 (13, 'BOŞ', NULL, 1, 13, NULL),
 (14, 'BOŞ', NULL, 1, 14, NULL),
 (15, 'BOŞ', NULL, 1, 15, NULL),
 (16, 'DOLU', 2, 2, 1, 26),
-(17, 'BOŞ', NULL, 2, 2, NULL),
+(17, 'DOLU', 2, 2, 2, 27),
 (18, 'BOŞ', NULL, 2, 3, NULL),
 (19, 'BOŞ', NULL, 2, 4, NULL),
 (20, 'BOŞ', NULL, 2, 5, NULL),
@@ -116,7 +119,7 @@ INSERT INTO `koltuk` (`koltuk_id`, `koltukDurumu`, `k_id`, `ucus_id`, `koltuk_no
 (49, 'BOŞ', NULL, 4, 4, NULL),
 (50, 'BOŞ', NULL, 4, 5, NULL),
 (51, 'BOŞ', NULL, 4, 6, NULL),
-(52, 'REZERVE', 4, 4, 7, 11),
+(52, 'BOŞ', NULL, 4, 7, 11),
 (53, 'BOŞ', NULL, 4, 8, NULL),
 (54, 'BOŞ', NULL, 4, 9, NULL),
 (55, 'BOŞ', NULL, 4, 10, NULL),
@@ -170,7 +173,7 @@ INSERT INTO `koltuk` (`koltuk_id`, `koltukDurumu`, `k_id`, `ucus_id`, `koltuk_no
 (103, 'BOŞ', NULL, 7, 13, NULL),
 (104, 'BOŞ', NULL, 7, 14, NULL),
 (105, 'BOŞ', NULL, 7, 15, NULL),
-(106, 'BOŞ', NULL, 8, 1, NULL),
+(106, 'DOLU', 2, 8, 1, 28),
 (107, 'BOŞ', NULL, 8, 2, NULL),
 (108, 'BOŞ', NULL, 8, 3, NULL),
 (109, 'BOŞ', NULL, 8, 4, NULL),
@@ -322,7 +325,7 @@ INSERT INTO `koltuk` (`koltuk_id`, `koltukDurumu`, `k_id`, `ucus_id`, `koltuk_no
 (285, 'BOŞ', NULL, 18, 15, NULL),
 (286, 'BOŞ', NULL, 19, 1, NULL),
 (287, 'BOŞ', NULL, 19, 2, NULL),
-(288, 'REZERVE', 2, 19, 3, 10),
+(288, 'BOŞ', NULL, 19, 3, 10),
 (289, 'BOŞ', NULL, 19, 4, NULL),
 (290, 'BOŞ', NULL, 19, 5, NULL),
 (291, 'BOŞ', NULL, 19, 6, NULL),
@@ -1169,7 +1172,7 @@ ALTER TABLE `ucus`
 -- Tablo için AUTO_INCREMENT değeri `bilet`
 --
 ALTER TABLE `bilet`
-  MODIFY `bilet_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `bilet_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `koltuk`

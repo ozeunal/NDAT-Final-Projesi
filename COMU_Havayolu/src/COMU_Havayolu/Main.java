@@ -88,6 +88,7 @@ public class Main {
 		case 3: 
 			System.out.print("Güle güle!");
 			System.out.println();
+			System.exit(0);
 			break;
 		default:
 			System.out.print("Tekrar girin!");

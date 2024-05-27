@@ -214,21 +214,47 @@ public class Koltuk {
             System.out.println("Bilet Bilgileri");
             Bilet bilet1=new Bilet();
             bilet1.r_biletListele(Main.kullanici.getId(),koltukId);
-	         System.out.println("\n1-Ödeme Yap 2-Rezerve Kal");
-	         System.out.println();
-	         System.out.print("Yapmak istediğiniz işlemi seçiniz:");
-	         int secim = input.nextInt();
-	         switch (secim) {
-	         case 1:
-	        	 Bilet bilet=new Bilet();
-	             bilet.biletAl(Ucus.ucus.getId(), Main.kullanici.getId(), koltukId);
-	        	 break;
-	         case 2:
-	             break;
-	         }
+	         
+	        } else {
+	            System.out.println("Koltuk rezervasyonu başarısız.");
+	        }
         
-        } else {
-            System.out.println("Koltuk rezervasyonu başarısız.");
+        boolean odemeYapildi = false;
+        int sure = 10; // Süre saniye cinsinden, 1 dakika = 60 saniye
+
+        while (sure > 0 && !odemeYapildi) {
+            System.out.println("\nKalan süre: " + sure / 60 + " dakika " + sure % 60 + " saniye");
+            System.out.println("Ödeme yapmak için 1'e basın: ");
+
+            try {
+                // Bekleme süresi boyunca kullanıcı girişi beklemek
+                if (System.in.available() > 0) {
+                    String giris = input.nextLine();
+
+                    // Girilen değeri kontrol et
+                    if (giris.equals("1")) {
+                        Bilet bilet = new Bilet();
+                        bilet.biletAl(Ucus.ucus.getId(), Main.kullanici.getId(), koltukId);
+                        odemeYapildi = true;
+                        break;
+                    }
+                }
+
+                Thread.sleep(1000); // Her 1 saniyede bir süreyi azalt
+                sure--;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
+        if (!odemeYapildi) {
+            System.out.println("Süre doldu. İşlem iptal ediliyor.");
+            Bilet bilet = new Bilet();
+            bilet.r_biletIptal(koltukId);
+        }
+        else {
+        System.out.println("Koltuk rezervasyonu başarısız.");
+    }
     }
 }
