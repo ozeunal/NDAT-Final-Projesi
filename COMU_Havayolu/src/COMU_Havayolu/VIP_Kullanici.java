@@ -2,9 +2,9 @@ package COMU_Havayolu;
 
 import java.time.LocalDate;
 
-public class VİP_Kullanici extends Kullanici{
+public class VIP_Kullanici extends Kullanici{
 	
-	private double indirim_Orani=0.25;
+	public static double indirim_Orani=0.25;
 	/*
 
 	public VİP_Kullanici(String name, String surname, String id, LocalDate birthday, String telephone_number, char sex,
@@ -14,7 +14,7 @@ public class VİP_Kullanici extends Kullanici{
 	}
 */
 	
-	public VİP_Kullanici(String email, int parola, double indirimOrani) {
+	public VIP_Kullanici(String email, int parola, double indirimOrani) {
 		super(email, parola);
 		this.indirim_Orani=indirimOrani;
 	}

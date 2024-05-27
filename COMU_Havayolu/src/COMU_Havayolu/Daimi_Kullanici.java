@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Daimi_Kullanici extends Kullanici {
 	
-	private double indirim_Orani=0.10;
+	public static double indirim_Orani=0.10;
 	/*
 
 	public Daimi_Kullanici(String name, String surname, String id, LocalDate birthday, String telephone_number,

@@ -14,7 +14,7 @@ public class Main {
 	Ucus ucus;
 	public static Kullanici kullanici;
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
 		
 		while(true) {
 		Scanner input = new Scanner(System.in);
@@ -57,12 +57,14 @@ public class Main {
 			            kullanici = new Kullanici(email1,parola1);
 			            kullanici.setUyelikTipi(uyelikTipi);
 			            kullanici.setId(kId);
+			            int[] bilgiler = Kullanici.kayitBilgileri(kId);
+                        int gecenYil = bilgiler[0];
+                        int totalBilet = bilgiler[1];
 			            
-			            int gecenYil = Kullanici.kayitTarihindenGecenYil(kId);
-			            if (gecenYil >= 10) {
+			            if (gecenYil >= 10 && totalBilet >=4) {
 			            	kullanici.setUyelikTipi("VIP");
 			                System.out.println("Hoşgeldiniz VIP " + resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
-			            } else if(gecenYil>=5) {
+			            } else if(gecenYil>=5 && totalBilet >=1) {
 			            	kullanici.setUyelikTipi("Daimi Üye");
 			                System.out.println("Hoşgeldiniz Daimi Üyemiz "+ resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
 			            }else {
@@ -70,7 +72,7 @@ public class Main {
 			            	System.out.println("Hoşgeldiniz "+ resultSet.getString("ad").substring(0, 1).toUpperCase()+resultSet.getString("ad").substring(1) + " " + resultSet.getString("soyad").toUpperCase());
 			            }
 			            
-			            Ucus.main(args);
+			            Ucus.ucusIslemleriMenu();
 			        } else {
 			            System.out.println("E-posta veya parola hatalı!");
 			        }

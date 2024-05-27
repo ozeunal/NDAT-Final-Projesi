@@ -25,25 +25,6 @@ public class Kullanici {
 	private LocalDate kayit_tarihi;
 	private String uyelik_tipi;
 	
-	/*
-	public Kullanici(int id,String name, String surname, String tc, LocalDate birthday, String telephone_number, char sex, 
-			char marital_status, String email, int parola, LocalDate date_of_record, String uyelik_tipi) {
-		k_id=id;
-		ad = name;
-		soyad = surname;
-		tc = tc;
-		dogum_tarihi = birthday;
-		telefon_numarasi = telephone_number;
-		cinsiyet = sex;
-		medeni_durum = marital_status;
-		e_posta = email;
-		this.parola = parola; 
-		kayit_tarihi = date_of_record;
-		uyelik_tipi=uyelik_tipi;
-	
-	}
-	*/
-	
 	public Kullanici(String email, int parola) {
 		e_posta = email;
 		this.parola = parola; 
@@ -59,92 +40,22 @@ public class Kullanici {
 	
 	public void setUyelikTipi(String uyelikTipi) {
         uyelik_tipi= uyelikTipi;
+        
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/havayolu", "root", "")) {
+            String updateSql = "UPDATE kullanici SET uyelik_tipi = ? WHERE k_id = ?";
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, uyelikTipi);
+            updateStatement.setInt(2, this.k_id);
+            updateStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 	
 	public String getUyelikTipi() {
         return uyelik_tipi;
     }
 	
-	public String getAd() {
-        return ad;
-    }
-
-    public void setAd(String name) {
-        ad = name;
-    }
-
-    // Soyad (Surname)
-    public String getSoyad() {
-        return soyad;
-    }
-
-    public void setSoyad(String surname) {
-        soyad = surname;
-    }
-
-    public String getTc() {
-        return tc;
-    }
-
-    public void setTc(String tc) {
-        tc = tc;
-    }
-
-    public LocalDate getDogumTarihi() {
-        return dogum_tarihi;
-    }
-
-    public void setDogumTarihi(LocalDate birthday) {
-        dogum_tarihi = birthday;
-    }
-
-    public String getTelefonNumarasi() {
-        return telefon_numarasi;
-    }
-
-    public void setTelefonNumarasi(String telephone_number) {
-        telefon_numarasi = telephone_number;
-    }
-
-    public char getCinsiyet() {
-        return cinsiyet;
-    }
-
-    public void setCinsiyet(char sex) {
-        cinsiyet = sex;
-    }
-
-    public char getMedeniDurum() {
-        return medeni_durum;
-    }
-
-    public void setMedeniDurum(char marital_status) {
-        medeni_durum = marital_status;
-    }
-
-    public String getEposta() {
-        return e_posta;
-    }
-
-    public void setEposta(String email) {
-    	e_posta = email;
-    }
-
-    public int getParola() {
-        return parola;
-    }
-
-    public void setParola(int parola) {
-        this.parola = parola;
-    }
-  
-    public LocalDate getKayitTarihi() {
-        return kayit_tarihi;
-    }
-
-    public void setKayitTarihi(LocalDate date_of_record) {
-        kayit_tarihi = date_of_record;
-    }
 
     public static void kayit() {
 		   try {
@@ -199,11 +110,11 @@ public class Kullanici {
 		
 	}
 
-public static int kayitTarihindenGecenYil(int kId) {
-	
-     try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/havayolu", "root", "")) {
-            // Kayıt tarihini çekmek için SQL sorgusu
-    	   String sql = "SELECT kayitTarihi FROM kullanici WHERE k_id = ?";
+    public static int[] kayitBilgileri(int kId) {
+        int[] bilgiler = new int[2]; // 0 index -> geçen yıl, 1 index -> total bilet sayısı
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/havayolu", "root", "")) {
+            // Kayıt tarihini ve total bilet sayısını çekmek için SQL sorgusu
+            String sql = "SELECT kayitTarihi, COUNT(bilet_id) AS total_bilet FROM kullanici LEFT JOIN bilet ON kullanici.k_id = bilet.k_id WHERE kullanici.k_id = ? GROUP BY kullanici.k_id";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, kId);
 
@@ -215,14 +126,16 @@ public static int kayitTarihindenGecenYil(int kId) {
 
                 // Kayıt tarihinden bugüne kadar geçen yılları hesapla
                 Period period = Period.between(kayitTarihi, bugun);
-                return period.getYears();
+                bilgiler[0] = period.getYears();
+
+                // Total bilet sayısını al
+                bilgiler[1] = resultSet.getInt("total_bilet");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 0;
-}
-
+        return bilgiler;
+    }
 }
 
 
