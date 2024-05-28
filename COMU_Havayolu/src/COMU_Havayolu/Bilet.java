@@ -85,7 +85,7 @@ public class Bilet {
 	                else if(uyeTipi.equals("Daimi Üye")) {
 	                	 indirimOrani = Daimi_Kullanici.indirim_Orani;
 	                }
-	                
+      
 	                double indirimliFiyat = normalFiyat - (normalFiyat * indirimOrani);
 
 	                System.out.printf("Bilet ID: %d | Ad-Soyad: %s %s |  Nereden: %s | Nereye: %s | Kalkış: %s | Varış: %s | Koltuk: %d | Koltuk Durumu: %s | Bilet Fiyatı: %.2fTL | Ödenen İndirimli Fiyat: %.2fTL%n",
@@ -153,6 +153,9 @@ public class Bilet {
         } else if (uyeTipi.equals("Daimi Üye")) {
             indirimliFiyat -= (normalFiyat * Daimi_Kullanici.indirim_Orani);
         }
+        if (Ucus.ucusTipi.equals("GİDİŞ") || Ucus.ucusTipi.equals("DÖNÜŞ")) {
+            indirimliFiyat -= (normalFiyat * 0.02);
+        }
         
         Scanner input = new Scanner(System.in);
         System.out.printf("İndirimli bilet fiyatı: %.2fTL\n", indirimliFiyat);
@@ -184,6 +187,9 @@ public class Bilet {
                             updateStmt.executeUpdate();
                             
                             System.out.println("Ödemeniz başarıyla alındı.");
+                            if(Ucus.ucusTipi.equals("GİDİŞ")) {
+                            	Ucus.donusUcus();
+                            }
                         }
                     }
                 }
@@ -191,6 +197,7 @@ public class Bilet {
                 e.printStackTrace();
             }
         } else {
+        	Rezervasyon.r_biletIptal(koltukId);
             System.out.println("Bilet alımı iptal edildi.");
         }
         

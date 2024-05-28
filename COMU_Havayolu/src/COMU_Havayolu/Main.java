@@ -4,9 +4,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Main {
@@ -97,6 +94,4 @@ public class Main {
 		}
 
 	}
-	
-	
 }

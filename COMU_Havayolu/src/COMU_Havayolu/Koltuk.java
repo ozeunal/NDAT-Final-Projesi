@@ -97,6 +97,7 @@ public class Koltuk {
     }
 
     public boolean koltukRezerveEt(int koltukId, int kullanıcıId, String kullanıcıVIP) {
+    	
         Koltuk seçilenKoltuk = null;
         for (Koltuk koltuk : koltuklar) {
             if (koltuk.getKoltukId() == koltukId) {
@@ -126,39 +127,6 @@ public class Koltuk {
         String url = "jdbc:mysql://localhost:3306/havayolu";
         String username = "root";
         String password = "";
-        
-        /*
-        int biletId = 0;
-        String insertBiletQuery = "INSERT INTO bilet (ucus_id, k_id) VALUES (?, ?)";
-        try (Connection conn = DriverManager.getConnection(url, username, password);
-             PreparedStatement pstmt = conn.prepareStatement(insertBiletQuery, Statement.RETURN_GENERATED_KEYS)) {
-
-            pstmt.setInt(1, Ucus.ucus.getId());
-            pstmt.setInt(2, kullanıcıId);
-
-            int affectedRows = pstmt.executeUpdate();
-
-            if (affectedRows == 0) {
-                System.out.println("Bilet eklenirken bir hata oluştu, hiçbir satır etkilenmedi.");
-                return false;
-            }
-
-            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    biletId = generatedKeys.getInt(1);
-                  Bilet bilet=new Bilet();
-                  bilet.setBiletId(biletId);
-                } else {
-                    throw new SQLException("Bilet eklenirken hata oluştu, otomatik olarak oluşturulan anahtar alınamadı.");
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        */
         String query = "UPDATE koltuk SET koltukDurumu = 'REZERVE', k_id = " + kullanıcıId + " WHERE koltuk_id = " + koltukId;
 
         try (Connection conn = DriverManager.getConnection(url, username, password);
@@ -212,8 +180,7 @@ public class Koltuk {
             System.out.println("Bir dakika boyunca rezerve kalmanız durumunda seçiminiz iptal olucaktır.");
             System.out.println("---------------------------------------------------------------------------------------");
             System.out.println("Bilet Bilgileri");
-            Bilet bilet1=new Bilet();
-            bilet1.r_biletListele(Main.kullanici.getId(),koltukId);
+            Rezervasyon.r_biletListele(Main.kullanici.getId(),koltukId);
 	         
 	        } else {
 	            System.out.println("Koltuk rezervasyonu başarısız.");
@@ -250,8 +217,7 @@ public class Koltuk {
 
         if (!odemeYapildi) {
             System.out.println("Süre doldu. İşlem iptal ediliyor.");
-            Bilet bilet = new Bilet();
-            bilet.r_biletIptal(koltukId);
+            Rezervasyon.r_biletIptal(koltukId);
         }
         else {
         System.out.println("Koltuk rezervasyonu başarısız.");
