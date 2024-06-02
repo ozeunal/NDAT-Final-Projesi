@@ -85,7 +85,6 @@ public class Ucus {
         switch (secim) {
             case 1:
                 tekYonUcus();
-                ucusTipi="TEK YÖN";
                 break;
             case 2:
             	ucusTipi="GİDİŞ";
@@ -103,6 +102,7 @@ public class Ucus {
     }
 
     public static void tekYonUcus() {
+    	ucusTipi="TEK YÖN";
         Scanner input = new Scanner(System.in);
         System.out.println("---------------------------------------------------------------------------------------");
         System.out.println("TEK YÖN UÇUŞ");
@@ -354,90 +354,4 @@ public class Ucus {
            System.err.println("Hata: " + e.getMessage());
        }
    }
-   
-   /*
-    public static void gidisDonusUcus() {
-        Scanner input = new Scanner(System.in);
-        System.out.println("---------------------------------------------------------------------------------------");
-        System.out.println("GİDİŞ-DÖNÜŞ UÇUŞ");
-        System.out.println("---------------------------------------------------------------------------------------");
-        System.out.println("GİDİŞ İÇİN");
-        System.out.println("NEREDEN:");
-        String neredenGidis = input.nextLine();
-        System.out.print("NEREYE:");
-        String nereyeGidis = input.nextLine();
-        System.out.print("Hangi gün uçmak istersiniz:");
-        String gunGidis = input.nextLine();
-
-        List<Integer> ucusIdList2 = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/havayolu", "root",
-                "")) {
-            String sql = "SELECT * FROM Ucus WHERE nereden = ? AND nereye = ? AND gun LIKE ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, neredenGidis);
-                statement.setString(2, nereyeGidis);
-                statement.setString(3, "%" + gunGidis + "%");
-
-                ResultSet resultSet = statement.executeQuery();
-
-                int index = 1;
-                while (resultSet.next()) {
-                    int ucusId = resultSet.getInt("id");
-                    String neredenUcus = resultSet.getString("nereden");
-                    String nereyeUcus = resultSet.getString("nereye");
-                    String kalkisSaat = resultSet.getString("kalkis_saati");
-                    String varisSaat = resultSet.getString("varis_saati");
-                    String ucusGun = resultSet.getString("gun");
-                    double fiyat = resultSet.getDouble("fiyat");
-                    String ucusSikligi = resultSet.getString("ucus_sıklığı");
-                    java.sql.Date sonUctuguGun = resultSet.getDate("son_uctugu_gun");
-
-                    ucus = new Ucus(ucusId, resultSet.getString("nereden"), resultSet.getString("nereye"),
-                            resultSet.getString("kalkis_saati"), resultSet.getString("varis_saati"),
-                            resultSet.getString("gun"), resultSet.getDouble("fiyat"),
-                            resultSet.getString("ucus_sıklığı"), resultSet.getDate("son_uctugu_gun"));
-
-                    System.out.printf(
-                            "%d. Uçuş ID: %d | Nereden: %s | Nereye: %s | Kalkış Saati: %s | Varış Saati: %s | Gün: %s | Fiyat: %.2f TL | Uçuş Sıklığı: %s | Son Uçtuğu Gün: %s%n",
-                            index, ucusId, neredenUcus, nereyeUcus, kalkisSaat, varisSaat, ucusGun, fiyat,
-                            ucusSikligi, sonUctuguGun);
-                    ucusIdList2.add(resultSet.getInt("id"));
-                    index++;
-                }
-
-                if (index > 1) {
-
-                    System.out.print("Hangi uçuşu seçmek istersiniz? (1-" + (index - 1) + "): ");
-                    int secilen_ucus = input.nextInt();
-
-                    if (secilen_ucus > 0 && secilen_ucus < index) {
-                        int secilenUcusId = ucusIdList2.get(secilen_ucus - 1);
-                        System.out.println("Seçilen uçuş: " + secilen_ucus);
-                        ucus.setId(secilenUcusId);
-                        Koltuk.main(null);
-
-                    } else {
-                        System.out.println("Geçersiz seçim.");
-                    }
-                } else {
-                    System.out.println("Belirtilen kriterlere uygun hiçbir uçuş bulunamadı. :(");
-                    System.out.println("Yeni rota belirleyebilir veya çıkış yapabilirsiniz");
-                    Ucus.main(null);
-                    int secilen_ucus = input.nextInt();
-
-                    switch (secilen_ucus) {
-                        case 1:
-                            Ucus.main(null);
-                            break;
-                        case 2:
-                            // cikis();
-                            return;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Hata: " + e.getMessage());
-        }
-    }
-    */
 }

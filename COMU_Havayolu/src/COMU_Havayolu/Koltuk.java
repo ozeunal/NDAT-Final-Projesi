@@ -183,7 +183,8 @@ public class Koltuk {
             Rezervasyon.r_biletListele(Main.kullanici.getId(),koltukId);
 	         
 	        } else {
-	            System.out.println("Koltuk rezervasyonu başarısız.");
+	            //System.out.println("Koltuk rezervasyonu başarısız.");
+	            Ucus.ucusIslemleriMenu();
 	        }
         
         boolean odemeYapildi = false;
@@ -221,6 +222,7 @@ public class Koltuk {
         }
         else {
         System.out.println("Koltuk rezervasyonu başarısız.");
+        Ucus.ucusIslemleriMenu();
     }
     }
 }

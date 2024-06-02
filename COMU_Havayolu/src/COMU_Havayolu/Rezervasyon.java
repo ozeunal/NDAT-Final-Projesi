@@ -54,7 +54,7 @@ public class Rezervasyon {
             }
             
             System.out.println("Rezervasyonunuz iptal edildi.");
-            Ucus.ucus.ucusIslemleriMenu();
+            Ucus.ucusIslemleriMenu();
             return true;
 
         } catch (Exception e) {
